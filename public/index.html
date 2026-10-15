@@ -1,0 +1,359 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TradeSim | Paper Trading</title>
+    <button id="logoutButton" type="button" style="display: none;">
+    Logout
+</button>
+  
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: #0b1120;
+            color: #e5e7eb;
+        }
+
+        header {
+            padding: 22px 7%;
+            background: #111827;
+            border-bottom: 1px solid #263244;
+        }
+
+        header h1 {
+            color: #38bdf8;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: #9ca3af;
+        }
+
+        main {
+            width: 86%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        .section-title {
+            margin-bottom: 18px;
+            font-size: 20px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #263244;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .card p {
+            color: #9ca3af;
+            margin-bottom: 12px;
+        }
+
+        .card h2 {
+            font-size: 25px;
+        }
+
+        .market {
+            background: #111827;
+            border: 1px solid #263244;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin-bottom: 32px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 550px;
+        }
+
+        th, td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #263244;
+        }
+
+        th {
+            color: #9ca3af;
+            font-size: 13px;
+        }
+
+        td {
+            font-size: 14px;
+        }
+
+        .muted {
+            color: #9ca3af;
+        }
+
+        .status {
+            margin-bottom: 22px;
+            color: #9ca3af;
+            font-size: 14px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #6b7280;
+        }
+
+        @media (max-width: 600px) {
+            main {
+                width: 92%;
+            }
+
+            header {
+                padding: 20px 4%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>TradeSim</h1>
+        <p>Virtual trading. Real learning.</p>
+    </header>
+
+<section id="authPanel" style="max-width: 420px; margin: 30px auto; padding: 24px; background: #111827; border: 1px solid #263244; border-radius: 12px;">
+    <h2 style="margin-bottom: 18px;">Welcome to TradeSim</h2>
+
+    <form id="authForm">
+        <label for="email">Email</label>
+        <input id="email" type="email" required
+            placeholder="Enter your email"
+            style="display:block; width:100%; padding:12px; margin:8px 0 16px; background:#0b1120; color:white; border:1px solid #263244; border-radius:6px;">
+
+        <label for="password">Password</label>
+        <input id="password" type="password" required
+            placeholder="Enter your password"
+            style="display:block; width:100%; padding:12px; margin:8px 0 16px; background:#0b1120; color:white; border:1px solid #263244; border-radius:6px;">
+
+        <button type="submit" id="loginButton"
+            style="width:100%; padding:12px; background:#0284c7; color:white; border:0; border-radius:6px; cursor:pointer;">
+            Login
+        </button>
+    </form>
+
+    <button id="registerButton"
+        style="width:100%; padding:12px; margin-top:10px; background:#263244; color:white; border:0; border-radius:6px; cursor:pointer;">
+        Create Account
+    </button>
+
+    <p id="authMessage" style="margin-top:14px; color:#9ca3af;"></p>
+</section>
+
+    <main id="dashboard" style="display: none;">
+        <p class="status" id="status">Dashboard UI loaded — connecting features next.</p>
+
+        <h2 class="section-title">Account Overview</h2>
+
+        <section class="cards">
+            <div class="card">
+                <p>Virtual Balance</p>
+                <h2 id="balance">₹1,00,000.00</h2>
+            </div>
+
+            <div class="card">
+                <p>Portfolio Value</p>
+                <h2 id="portfolioValue">₹0.00</h2>
+            </div>
+
+            <div class="card">
+                <p>Total Profit / Loss</p>
+                <h2 id="profitLoss">₹0.00</h2>
+            </div>
+        </section>
+
+        
+<section style="margin-top:24px; padding:24px; background:#111827; border:1px solid #263244; border-radius:12px;">
+    <h2>Portfolio Performance</h2>
+    <p style="color:#9ca3af;">Track the value of your investments over time.</p>
+
+    <div style="position:relative; height:300px; width:100%;">
+        <canvas id="portfolioChart"></canvas>
+    </div>
+
+    <p id="portfolioChartMessage" style="color:#9ca3af;">
+        Waiting for portfolio data...
+    </p>
+</section>
+
+
+        <h2 class="section-title">Market Watch</h2>
+
+        <section class="market">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Company</th>
+                        <th>Current Price</th>
+                        <th>Previous Price</th>
+                    </tr>
+                </thead>
+                <tbody id="stockTable">
+                    <tr>
+                        <td colspan="4" class="muted">Market data will appear here.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+<section style="margin-top:24px; padding:24px; background:#111827; border:1px solid #263244; border-radius:12px;">
+    <h2>Stock Price Chart</h2>
+    <p style="color:#9ca3af;">View simulated stock price movements.</p>
+
+    <label for="chartSymbol">Select Stock</label>
+    <select id="chartSymbol"
+        style="display:block; width:100%; max-width:300px; padding:12px; margin:8px 0 20px; background:#0b1120; color:white; border:1px solid #263244; border-radius:6px;">
+    </select>
+
+    <div style="position:relative; height:320px; width:100%;">
+        <canvas id="stockChart"></canvas>
+    </div>
+
+    <p id="chartMessage" style="color:#9ca3af;"></p>
+</section>
+
+<section style="margin-top:24px; padding:24px; background:#111827; border:1px solid #263244; border-radius:12px;">
+    <h2>My Watchlist</h2>
+    <p style="color:#9ca3af;">Track stocks without buying them.</p>
+
+    <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+        <select id="watchlistSymbol"
+            style="padding:10px; background:#0b1120; color:white; border:1px solid #263244; border-radius:6px;">
+        </select>
+
+        <button id="addWatchlistButton" type="button"
+            style="padding:10px 16px; background:#2563eb; color:white; border:0; border-radius:6px; cursor:pointer;">
+            Add to Watchlist
+        </button>
+    </div>
+
+    <p id="watchlistMessage" style="color:#9ca3af;"></p>
+
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; text-align:left;">
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Company</th>
+                    <th>Current Price</th>
+                </tr>
+            </thead>
+            <tbody id="watchlistTable">
+                <tr>
+                    <td colspan="3">Log in to view your watchlist.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+        
+<h2 class="section-title">Trade Stocks</h2>
+
+<section class="card" style="margin-bottom: 32px;">
+    <form id="tradeForm">
+        <label for="tradeSymbol">Stock</label>
+        <select id="tradeSymbol" required
+            style="display:block; width:100%; padding:12px; margin:8px 0 16px; background:#0b1120; color:white; border:1px solid #263244; border-radius:6px;">
+        </select>
+
+        <label for="tradeQuantity">Quantity</label>
+        <input id="tradeQuantity" type="number" min="1" step="1" value="1" required
+            style="display:block; width:100%; padding:12px; margin:8px 0 16px; background:#0b1120; color:white; border:1px solid #263244; border-radius:6px;">
+
+        <button type="submit" id="buyButton"
+            style="padding:12px 24px; background:#16a34a; color:white; border:0; border-radius:6px; cursor:pointer;">
+            Buy
+        </button>
+
+        <button type="button" id="sellButton"
+            style="padding:12px 24px; margin-left:8px; background:#dc2626; color:white; border:0; border-radius:6px; cursor:pointer;">
+            Sell
+        </button>
+
+        <p id="tradeMessage" style="margin-top:14px; color:#9ca3af;"></p>
+    </form>
+</section>
+
+
+        <h2 class="section-title">My Portfolio</h2>
+
+        <section class="market">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Quantity</th>
+                        <th>Average Price</th>
+                        <th>Current Value</th>
+                        <th>Profit / Loss</th>
+                    </tr>
+                </thead>
+                <tbody id="portfolioTable">
+                    <tr>
+                        <td colspan="5" class="muted">Your holdings will appear here.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+<section style="margin-top:24px; padding:24px; background:#111827; border:1px solid #263244; border-radius:12px;">
+    <h2>Transaction History</h2>
+
+    <div style="overflow-x:auto;">
+        <table style="width:100%; border-collapse:collapse; text-align:left;">
+            <thead>
+                <tr>
+                    <th>Stock</th>
+                    <th>Type</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="transactionTable">
+                <tr>
+                    <td colspan="6">Log in to view transactions.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+
+    </main>
+
+    <footer>
+        TradeSim · Educational paper trading simulator · No real money involved
+    </footer>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
