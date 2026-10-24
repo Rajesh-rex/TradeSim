@@ -106,6 +106,21 @@ TradeSim/
 └── server.js
 ```
 
+
+## Screenshots
+
+### Dashboard
+![TradeSim Dashboard](screenshots/dashboard.png)
+
+### Stock Price Chart
+![TradeSim Stock Chart](screenshots/stockchart.png)
+
+### Portfolio and Transactions
+![TradeSim Portfolio and transaction history](screenshots/portfolio&transaction.png)
+
+### Watchlist and Trade stock
+![TradeSim Watchlist and Trade stock](screenshots/watchlist&tradestocks.png)
+
 ## Security
 
 - Passwords are hashed before storage.
